@@ -32,6 +32,11 @@ void Entity::setTexture(SDL_Texture *texture)
     _texture = texture;
 }
 
+void Entity::translate(const Vect2<float> &vec)
+{
+    _pos += vec;
+}
+
 Vect2<float> Entity::getSize() const
 {
     return _size;

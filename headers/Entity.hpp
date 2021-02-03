@@ -40,6 +40,13 @@ class Entity
         void setTexture(SDL_Texture *texture);
 
         /**
+         * Translate Entity on x & y axis
+         *
+         * @param vect the Vect2<float> translation vector
+         */
+        void translate(const Vect2<float> &vec);
+
+        /**
          * Get Entity size
          *
          * @return the Vect2<float> size
