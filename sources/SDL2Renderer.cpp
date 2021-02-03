@@ -76,7 +76,12 @@ void SDL2Renderer::drawEntities(const std::list<const Entity *> &entities)
                 entity->getSize().y
             };
 
-            SDL_SetRenderDrawColor(_renderer, 100, 100, 0, SDL_ALPHA_OPAQUE);
+            SDL_SetRenderDrawColor(
+                _renderer,
+                entity->getColor().r,
+                entity->getColor().g,
+                entity->getColor().b,
+                SDL_ALPHA_OPAQUE);
             SDL_RenderFillRectF(_renderer, &dest);
         } else {
             SDL_Rect dest = {

@@ -8,13 +8,18 @@
 #include "../headers/Entity.hpp"
 
 Entity::Entity(const Vect2<float> pos):
-    _size({0, 0}), _pos(pos), _texture(NULL)
+    _color({0, 0, 0}), _size({0, 0}), _pos(pos), _texture(NULL)
 {
 }
 
 Entity::~Entity()
 {
     SDL_DestroyTexture(_texture);
+}
+
+void Entity::setColor(const Color &color)
+{
+    _color = color;
 }
 
 void Entity::setSize(const Vect2<float> &size)
@@ -35,6 +40,11 @@ void Entity::setTexture(SDL_Texture *texture)
 void Entity::translate(const Vect2<float> &vec)
 {
     _pos += vec;
+}
+
+Color Entity::getColor() const
+{
+    return _color;
 }
 
 Vect2<float> Entity::getSize() const

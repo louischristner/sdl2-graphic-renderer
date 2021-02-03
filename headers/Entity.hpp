@@ -8,6 +8,7 @@
 #ifndef ENTITY_HPP_
 #define ENTITY_HPP_
 
+#include "Color.hpp"
 #include "Vect2.hpp"
 
 #include <SDL2/SDL.h>
@@ -17,6 +18,13 @@ class Entity
     public:
         Entity(const Vect2<float> pos = {0, 0});
         ~Entity();
+
+        /**
+         * Set Entity color
+         *
+         * @param r the color with RGB parameters (0 - 255)
+         */
+        void setColor(const Color &color);
 
         /**
          * Set Entity size
@@ -47,6 +55,13 @@ class Entity
         void translate(const Vect2<float> &vec);
 
         /**
+         * Get Entity color
+         *
+         * @return the color
+         */
+        Color getColor() const;
+
+        /**
          * Get Entity size
          *
          * @return the Vect2<float> size
@@ -69,6 +84,7 @@ class Entity
 
     protected:
     private:
+        Color _color;
         Vect2<float> _pos;
         Vect2<float> _size;
         SDL_Texture *_texture;
