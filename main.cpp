@@ -8,62 +8,94 @@
 
 #define FPS 60
 
+class Game {
+    public:
+        Game(Vect2<size_t> windowSize);
+        ~Game() = default;
+
+        bool onStart();
+        bool onUpdate();
+
+    protected:
+        SDL2Renderer _window;
+        Vect2<size_t> _windowSize;
+        std::list<const Entity *> _entities;
+
+    private:
+        Entity _obj;
+        Vect2<float> _objSpeed;
+
+        SDL_Event _event;
+        Uint32 _startTime;
+
+        const int _ticksPerFrame = 1000 / FPS;
+};
+
+Game::Game(Vect2<size_t> windowSize):
+    _windowSize(windowSize), _window(SDL2Renderer(windowSize))
+{
+}
+
+bool Game::onStart()
+{
+    _obj = _window.createRectangle({100, 100});
+    _obj.setColor({255, 255, 255});
+    _entities.push_back(&_obj);
+    _objSpeed = {10, 10};
+
+    return true;
+}
+
+bool Game::onUpdate()
+{
+    _startTime = SDL_GetTicks();
+
+    SDL_PollEvent(&_event);
+    if (_event.type == SDL_QUIT)
+        return false;
+
+    _window.drawEntities(_entities);
+
+    int frameTicks = SDL_GetTicks() - _startTime;
+    if (frameTicks < _ticksPerFrame) {
+        SDL_Delay(_ticksPerFrame - frameTicks);
+    }
+
+    Color color = {
+        (uint8_t) (std::rand() % 255),
+        (uint8_t) (std::rand() % 255),
+        (uint8_t) (std::rand() % 255)
+    };
+
+    if (_obj.getPosition().x < 0) {
+        _objSpeed.x = -_objSpeed.x;
+        _obj.setColor(color);
+    } else if (_obj.getPosition().y < 0) {
+        _objSpeed.y = -_objSpeed.y;
+        _obj.setColor(color);
+    } else if (_obj.getPosition().x + _obj.getSize().x > _windowSize.x) {
+        _objSpeed.x = -_objSpeed.x;
+        _obj.setColor(color);
+    } else if (_obj.getPosition().y + _obj.getSize().y > _windowSize.y) {
+        _objSpeed.y = -_objSpeed.y;
+        _obj.setColor(color);
+    }
+
+    _obj.translate(_objSpeed * ((float) _ticksPerFrame / FPS));
+
+    return true;
+}
+
 int main(void)
 {
-    const int ticksPerFrame = 1000 / FPS;
-    SDL2Renderer window({WINDOW_WIDTH, WINDOW_HEIGHT});
-    std::list<const Entity *> entities;
-
-    Entity rect = window.createRectangle({100, 100});
-    rect.setColor({255, 255, 255});
-    entities.push_back(&rect);
+    Game game({WINDOW_WIDTH, WINDOW_HEIGHT});
 
     // game loop
 
     std::srand(std::time(nullptr));
 
-    Vect2<float> entitySpeed = {10, 10};
-
-    SDL_Event event;
-    Uint32 startTime =
-        SDL_GetTicks();
-
-    while (true) {
-        startTime = SDL_GetTicks();
-
-        SDL_PollEvent(&event);
-        if (event.type == SDL_QUIT)
-            break;
-
-        window.drawEntities(entities);
-
-        int frameTicks = SDL_GetTicks() - startTime;
-        if (frameTicks < ticksPerFrame) {
-            SDL_Delay(ticksPerFrame - frameTicks);
-        }
-
-        Color color = {
-            (uint8_t) (std::rand() % 255),
-            (uint8_t) (std::rand() % 255),
-            (uint8_t) (std::rand() % 255)
-        };
-
-        if (rect.getPosition().x < 0) {
-            entitySpeed.x = -entitySpeed.x;
-            rect.setColor(color);
-        } else if (rect.getPosition().y < 0) {
-            entitySpeed.y = -entitySpeed.y;
-            rect.setColor(color);
-        } else if (rect.getPosition().x + rect.getSize().x > WINDOW_WIDTH) {
-            entitySpeed.x = -entitySpeed.x;
-            rect.setColor(color);
-        } else if (rect.getPosition().y + rect.getSize().y > WINDOW_HEIGHT) {
-            entitySpeed.y = -entitySpeed.y;
-            rect.setColor(color);
-        }
-
-        rect.translate(entitySpeed * ((float) ticksPerFrame / FPS));
-    }
+    game.onStart();
+    while (game.onUpdate());
 
     return 0;
 }
