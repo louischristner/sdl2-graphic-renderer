@@ -25,7 +25,7 @@ class IGraphicRenderer
          * @param pos the Vect2<float> position
          * @return the new Entity
          */
-        virtual Entity createRectangle(const Vect2<float> &size, const Vect2<float> &pos = {0, 0}) = 0;
+        virtual Entity *createRectangle(const Vect2<float> &size, const Vect2<float> &pos = {0, 0}) = 0;
 
         /**
          * Create a sprite Entity
@@ -34,7 +34,7 @@ class IGraphicRenderer
          * @param pos the Vect2<float> position
          * @return the new Entity
          */
-        virtual Entity createSprite(const std::string &filename, const Vect2<float> &pos = {0, 0}) = 0;
+        virtual Entity *createSprite(const std::string &filename, const Vect2<float> &pos = {0, 0}) = 0;
 
         /**
          * Draw a list of Entity on the window

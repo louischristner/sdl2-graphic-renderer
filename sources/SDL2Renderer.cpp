@@ -37,17 +37,18 @@ SDL2Renderer::~SDL2Renderer()
     SDL_Quit();
 }
 
-Entity SDL2Renderer::createRectangle(const Vect2<float> &size, const Vect2<float> &pos)
+Entity *SDL2Renderer::createRectangle(const Vect2<float> &size, const Vect2<float> &pos)
 {
-    Entity rectangle(pos);
+    Entity *rectangle = new Entity(pos);
 
-    rectangle.setSize(size);
+    rectangle->setSize(size);
     return rectangle;
 }
 
-Entity SDL2Renderer::createSprite(const std::string &filename, const Vect2<float> &pos)
+Entity *SDL2Renderer::createSprite(const std::string &filename, const Vect2<float> &pos)
 {
-    Entity sprite(pos);
+    Entity *sprite = new Entity(pos);
+    SDL_Rect dimension = { 0, 0, 0, 0 };
     SDL_Surface *surface = IMG_Load(filename.c_str());
 
     if (surface == NULL)
@@ -58,7 +59,10 @@ Entity SDL2Renderer::createSprite(const std::string &filename, const Vect2<float
     if (texture == NULL)
         throw GraphicException(IMG_GetError());
 
-    sprite.setTexture(texture);
+    SDL_QueryTexture(texture, NULL, NULL, &dimension.w, &dimension.h);
+
+    sprite->setSize({ (float) dimension.w, (float) dimension.h });
+    sprite->setTexture(texture);
     return sprite;
 }
 

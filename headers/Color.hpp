@@ -8,9 +8,11 @@
 #ifndef COLOR_HPP_
 #define COLOR_HPP_
 
+#include <SDL2/SDL_image.h>
+
 struct Color
 {
-    uint8_t r, g, b;
+    Uint8 r, g, b;
 };
 
 #endif /* !COLOR_HPP_ */

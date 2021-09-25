@@ -26,7 +26,7 @@ class SDL2Renderer : public IGraphicRenderer
          * @param pos the Vect2<float> position
          * @return the new Entity
          */
-        Entity createRectangle(const Vect2<float> &size, const Vect2<float> &pos = {0, 0}) override;
+        Entity *createRectangle(const Vect2<float> &size, const Vect2<float> &pos = {0, 0}) override;
 
         /**
          * Create a sprite Entity
@@ -35,7 +35,7 @@ class SDL2Renderer : public IGraphicRenderer
          * @param pos the Vect2<float> position
          * @return the new Entity
          */
-        Entity createSprite(const std::string &filename, const Vect2<float> &pos = {0, 0}) override;
+        Entity *createSprite(const std::string &filename, const Vect2<float> &pos = {0, 0}) override;
 
         /**
          * Draw a list of Entity on the window

@@ -11,7 +11,7 @@
 class Game {
     public:
         Game(Vect2<size_t> windowSize);
-        ~Game() = default;
+        ~Game();
 
         bool onStart();
         bool onUpdate();
@@ -22,9 +22,6 @@ class Game {
         std::list<const Entity *> _entities;
 
     private:
-        Entity _obj;
-        Vect2<float> _objSpeed;
-
         SDL_Event _event;
         Uint32 _startTime;
 
@@ -36,12 +33,19 @@ Game::Game(Vect2<size_t> windowSize):
 {
 }
 
+Game::~Game()
+{
+    _entities.clear();
+}
+
 bool Game::onStart()
 {
-    _obj = _window.createRectangle({100, 100});
-    _obj.setColor({255, 255, 255});
-    _entities.push_back(&_obj);
-    _objSpeed = {10, 10};
+    Entity *obj = _window.createSprite("resources/img.png");
+    _entities.push_back(obj);
+
+    // Entity *obj = _window.createRectangle({100, 100});
+    // obj.setColor({255, 255, 255});
+    // _entities.push_back(obj);
 
     return true;
 }
@@ -60,28 +64,6 @@ bool Game::onUpdate()
     if (frameTicks < _ticksPerFrame) {
         SDL_Delay(_ticksPerFrame - frameTicks);
     }
-
-    Color color = {
-        (uint8_t) (std::rand() % 255),
-        (uint8_t) (std::rand() % 255),
-        (uint8_t) (std::rand() % 255)
-    };
-
-    if (_obj.getPosition().x < 0) {
-        _objSpeed.x = -_objSpeed.x;
-        _obj.setColor(color);
-    } else if (_obj.getPosition().y < 0) {
-        _objSpeed.y = -_objSpeed.y;
-        _obj.setColor(color);
-    } else if (_obj.getPosition().x + _obj.getSize().x > _windowSize.x) {
-        _objSpeed.x = -_objSpeed.x;
-        _obj.setColor(color);
-    } else if (_obj.getPosition().y + _obj.getSize().y > _windowSize.y) {
-        _objSpeed.y = -_objSpeed.y;
-        _obj.setColor(color);
-    }
-
-    _obj.translate(_objSpeed * ((float) _ticksPerFrame / FPS));
 
     return true;
 }
