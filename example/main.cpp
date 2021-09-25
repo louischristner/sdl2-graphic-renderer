@@ -1,11 +1,11 @@
 #include <ctime>
 #include <cstdlib>
 
-#include "headers/SDL2Renderer.hpp"
+#include "../headers/SDL2Renderer.hpp"
 
 #define WINDOW_WIDTH 800
 #define WINDOW_HEIGHT 600
-
+#define GRAVITY 9.8
 #define FPS 60
 
 class Game {
@@ -17,7 +17,10 @@ class Game {
         bool onUpdate();
 
     protected:
-        SDL2Renderer _window;
+        bool onEvent();
+
+    protected:
+        SDL2Renderer _renderer;
         Vect2<size_t> _windowSize;
         std::list<const Entity *> _entities;
 
@@ -26,10 +29,12 @@ class Game {
         Uint32 _startTime;
 
         const int _ticksPerFrame = 1000 / FPS;
+
+        Entity *_character;
 };
 
 Game::Game(Vect2<size_t> windowSize):
-    _windowSize(windowSize), _window(SDL2Renderer(windowSize))
+    _windowSize(windowSize), _renderer(SDL2Renderer(windowSize))
 {
 }
 
@@ -40,12 +45,25 @@ Game::~Game()
 
 bool Game::onStart()
 {
-    Entity *obj = _window.createSprite("resources/img.png");
-    _entities.push_back(obj);
+    Vect2<float> characterSize = { 50, 50 };
+    Vect2<float> characterPosition = {
+        WINDOW_WIDTH / 2 - (characterSize.x / 2),
+        WINDOW_HEIGHT / 2 - (characterSize.y / 2)
+    };
 
-    // Entity *obj = _window.createRectangle({100, 100});
-    // obj.setColor({255, 255, 255});
-    // _entities.push_back(obj);
+    _character = _renderer.createRectangle(characterSize);
+    _character->setPosition(characterPosition);
+    _character->setColor({ 255, 255, 255 });
+    _entities.push_back(_character);
+
+    return true;
+}
+
+bool Game::onEvent()
+{
+    SDL_PollEvent(&_event);
+    if (_event.type == SDL_QUIT)
+        return false;
 
     return true;
 }
@@ -54,11 +72,10 @@ bool Game::onUpdate()
 {
     _startTime = SDL_GetTicks();
 
-    SDL_PollEvent(&_event);
-    if (_event.type == SDL_QUIT)
+    if (!onEvent())
         return false;
 
-    _window.drawEntities(_entities);
+    _renderer.drawEntities(_entities);
 
     int frameTicks = SDL_GetTicks() - _startTime;
     if (frameTicks < _ticksPerFrame) {
@@ -70,11 +87,9 @@ bool Game::onUpdate()
 
 int main(void)
 {
-    Game game({WINDOW_WIDTH, WINDOW_HEIGHT});
+    Game game({ WINDOW_WIDTH, WINDOW_HEIGHT });
 
     // game loop
-
-    std::srand(std::time(nullptr));
 
     game.onStart();
     while (game.onUpdate());

@@ -6,7 +6,7 @@ NAME	=	prog
 SRC		=	sources/Entity.cpp				\
 			sources/GraphicException.cpp	\
 			sources/SDL2Renderer.cpp		\
-			main.cpp
+			example/main.cpp
 
 OBJ		=	$(SRC:.cpp=.o)
 
