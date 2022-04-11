@@ -30,7 +30,7 @@ class Game {
 
         const int _ticksPerFrame = 1000 / FPS;
 
-        Entity *_character;
+        Entity *_character = nullptr;
 };
 
 Game::Game(Vect2<size_t> windowSize):
@@ -41,6 +41,9 @@ Game::Game(Vect2<size_t> windowSize):
 Game::~Game()
 {
     _entities.clear();
+
+    if (_character != nullptr)
+        delete _character;
 }
 
 bool Game::onStart()
@@ -51,6 +54,7 @@ bool Game::onStart()
         WINDOW_HEIGHT / 2 - (characterSize.y / 2)
     };
 
+    // _character = _renderer.createSprite("resources/img.png");
     _character = _renderer.createRectangle(characterSize);
     _character->setPosition(characterPosition);
     _character->setColor({ 255, 255, 255 });
